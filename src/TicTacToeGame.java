@@ -63,7 +63,7 @@ public class TicTacToeGame{
         }
     }
 
-    scanner.close();
+    Scanner.close();
 
     // Check the validity of movement
     private boolean isValidMove(int row, int col) {
@@ -93,8 +93,18 @@ public class TicTacToeGame{
         return board[0][2] == currentPlayer && board[1][1] == currentPlayer && board[2][0] == currentPlayer;
     }
 
-    
+    // Checking if the game is a draw
 
+    private boolean isBoardFull() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == ' ') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
 }
 
