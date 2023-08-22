@@ -12,6 +12,7 @@ public class TicTacToeGame{
         game.playGame();
     }
 
+    // initialization of the board
     private void initializeBoard() {
         for ( int i=0; i<3;i++ );
         for (int i = 0; i < 3; i++) {
@@ -21,6 +22,7 @@ public class TicTacToeGame{
         }
     }
 
+    // print the board on consol
     private void printBoard() {
         System.out.println(" 0 1 2");
         for (int i=0; i<3; i++){
@@ -34,6 +36,7 @@ public class TicTacToeGame{
 
     }
 
+    // game logic
     private void playGame() {
         Scanner scanner = new Scanner(System.in);
         boolean gameWon = false;
@@ -62,15 +65,35 @@ public class TicTacToeGame{
 
     scanner.close();
 
+    // Check the validity of movement
     private boolean isValidMove(int row, int col) {
         return row>=0 && row<3 && col>=0 && col<3 && board[row][col] == ' ';
     }
 
+    // Check Methods
 
+    // Checks if there is a winner
+    private boolean checkWin(int row, int col) {
+        return checkRow(row) || checkColumn(col) || checkDiagonals() || checkAntiDiagonals();
+    }
+    // Checks whether the same player has filled all the fields in a given row
+    private boolean checkRow(int row) {
+        return board[row][0] == currentPlayer && board[row][1] == currentPlayer && board[row][2] == currentPlayer;
+    }
+    // Checks whether the same player has filled all the fields in a given column
+    private boolean checkColumn(int col) {
+        return board[0][col] == currentPlayer && board[1][col] == currentPlayer && board[2][col] == currentPlayer;
+    }
+    //Checks the main diagonal to see if the same player has filled all the fields in it
+    private boolean checkDiagonals() {
+        return board[0][0] == currentPlayer && board[1][1] == currentPlayer && board[2][2] == currentPlayer;
+    }
+    //Checks the main anti-diagonal to see if the same player has filled all the fields in it.
+    private boolean checkAntiDiagonals() {
+        return board[0][2] == currentPlayer && board[1][1] == currentPlayer && board[2][0] == currentPlayer;
+    }
 
-
-
-
+    
 
 
 }
