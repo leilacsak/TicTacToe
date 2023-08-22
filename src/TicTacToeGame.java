@@ -62,6 +62,12 @@ public class TicTacToeGame{
 
     scanner.close();
 
+    private boolean isValidMove(int row, int col) {
+        return row>=0 && row<3 && col>=0 && col<3 && board[row][col] == ' ';
+    }
+
+
+
 
 
 
