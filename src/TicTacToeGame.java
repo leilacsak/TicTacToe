@@ -1,85 +1,99 @@
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class TicTacToeGame {
 
-    private static char[][] board = new char[3][3];
+public class TicTacToeGame extends JFrame {
+
+    private final char[][] board = new char[3][3];
+
+    private final JButton[][] buttons = new JButton[3][3];
 
     private static char currentPlayer = 'X';
-    Scanner scanner = new Scanner(System.in);
 
 
-    public static void main(String[] args) {
-        TicTacToeGame game = new TicTacToeGame();
-        game.initializeBoard();
-        game.playGame();
-        game.closeScanner();
+    public TicTacToeGame() {
+
+        setTitle("Tic-Tac-Toe");
+        setSize(300, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new GridLayout(3, 3));
+
+        initializeButtons();
+        initializeBoard();
     }
+        private void initializeButtons() {
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 3; col++) {
+                    buttons[row][col] = new JButton("");
+                    buttons[row][col].setFont(new Font("Arial", Font.PLAIN, 48));
+                    buttons[row][col].setFocusPainted(false);
+                    buttons[row][col].setBackground(Color.WHITE);
+                    buttons[row][col].addActionListener(new ButtonClickListener(row, col));
+                    add(buttons[row][col]);
+                }
+            }
+        }
 
-    // initialization of the board
     private void initializeBoard() {
-        for (int i = 0; i < 3; i++) ;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                board[i][j] = ' ';
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                board[row][col] = ' ';
             }
         }
     }
 
-    // print the board on consol
     private void printBoard() {
-        System.out.println(" 0 1 2");
+        System.out.println("Current board:");
         for (int i = 0; i < 3; i++) {
-            System.out.println(i + " ");
             for (int j = 0; j < 3; j++) {
                 System.out.print(board[i][j] + " ");
             }
-
             System.out.println();
         }
-
     }
 
-    // game logic
-    private void playGame() {
+    private class ButtonClickListener implements ActionListener {
+        private final int row;
+        private final int col;
 
-        boolean gameWon = false;
-
-
-        while (!gameWon) {
-            System.out.println("Player " + currentPlayer + ", enter row (0-2) and column (0-2): ");
-            int row = scanner.nextInt();
-            int col = scanner.nextInt();
-
-            if (isValidMove(row, col)) {
-                board[row][col] = currentPlayer;
-                printBoard();
-                gameWon = checkWin(row, col);
-                if (gameWon) {
-                    System.out.println("Player " + currentPlayer + " wins!");
-                } else if (isBoardFull()) {
-                    System.out.println("It's a draw!");
-                    break;
-                }
-                currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-            } else {
-                System.out.println("Invalid move. Try again.");
-            }
-
+        public ButtonClickListener(int row, int col) {
+            this.row = row;
+            this.col = col;
         }
 
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (buttons[row][col].getText().equals("") && !isGameWon() && !isBoardFull()) {
+                buttons[row][col].setText(String.valueOf(currentPlayer));
+                buttons[row][col].setForeground(currentPlayer == 'X' ? Color.BLUE : Color.RED);
+                board[row][col] = currentPlayer;
+                printBoard();
+                currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+
+                if (isGameWon()) {
+                    JOptionPane.showMessageDialog(null, "Player " + currentPlayer + " wins!");
+                    resetBoard();
+                } else if (isBoardFull()) {
+                    JOptionPane.showMessageDialog(null, "It's a draw!");
+                    resetBoard();
+                }
+            }
+        }
     }
 
-    // Check the validity of movement
-    private boolean isValidMove(int row, int col) {
-        return row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == ' ';
+    private boolean isGameWon() {
+        for (int i = 0; i < 3; i++) {
+            if (checkRow(i) || checkColumn(i)) {
+                return true;
+            }
+        }
+
+        return checkDiagonals() || checkAntiDiagonals();
     }
 
-    // Check Methods
-
-    // Checks if there is a winner
-    private boolean checkWin(int row, int col) {
-        return checkRow(row) || checkColumn(col) || checkDiagonals() || checkAntiDiagonals();
-    }
 
     // Checks whether the same player has filled all the fields in a given row
     private boolean checkRow(int row) {
@@ -114,11 +128,33 @@ public class TicTacToeGame {
         return true;
     }
 
-    private void closeScanner() {
-        scanner.close();
-
+    private void resetBoard() {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                buttons[row][col].setText("");
+                buttons[row][col].setBackground(Color.WHITE);
+            }
+        }
+        currentPlayer = 'X';
     }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            TicTacToeGame game = new TicTacToeGame();
+            game.setVisible(true);
+        });
+    }
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
